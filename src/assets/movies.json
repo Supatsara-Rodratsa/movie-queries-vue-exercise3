@@ -1,0 +1,216 @@
+[
+  {
+    "id": "dune2021",
+    "year": "2021",
+    "genre": "sci-fi",
+    "title": "Dune",
+    "score": "85",
+    "picture": "https://upload.wikimedia.org/wikipedia/en/8/8e/Dune_%282021_film%29.jpg"
+  },
+  {
+    "id": "eeaao2022",
+    "year": "2022",
+    "genre": "sci-fi",
+    "title": "Everything Everywhere All at Once",
+    "score": "99",
+    "picture": "https://upload.wikimedia.org/wikipedia/en/1/1e/Everything_Everywhere_All_at_Once.jpg"
+  },
+  {
+    "id": "topgun2022",
+    "year": "2022",
+    "genre": "action",
+    "title": "Top Gun: Maverick",
+    "score": "75",
+    "picture": "https://upload.wikimedia.org/wikipedia/en/1/13/Top_Gun_Maverick_Poster.jpg"
+  },
+  {
+    "id": "nope2022",
+    "year": "2022",
+    "genre": "terror",
+    "title": "Nope",
+    "score": "50",
+    "picture": "https://upload.wikimedia.org/wikipedia/en/e/e6/Nope_%28film%29_poster.jpg"
+  },
+  {
+    "id": "rec2007",
+    "year": "2007",
+    "genre": "terror",
+    "title": "Rec",
+    "score": "33"
+  },
+  {
+    "id": "shrek",
+    "year": "2001",
+    "genre": "ANIMATION",
+    "title": "Shrek",
+    "score": "66"
+  },
+  {
+    "id": "thelobster2015",
+    "year": "2015",
+    "genre": "comedy",
+    "title": "The Lobster",
+    "score": "70"
+  },
+  {
+    "id": "insideout2015",
+    "year": "2015",
+    "genre": "animation",
+    "title": "Inside Out",
+    "score": "50"
+  },
+  {
+    "id": "minions2015",
+    "year": "2015",
+    "genre": "animation",
+    "title": "Minions",
+    "score": "85"
+  },
+  {
+    "id": "antman2015",
+    "year": "2015",
+    "genre": "action",
+    "title": "Ant-Man",
+    "score": "45"
+  },
+  {
+    "id": "hh2015",
+    "year": "2015",
+    "genre": "ACTION",
+    "title": "Hardcore Henry",
+    "score": "75"
+  },
+  {
+    "id": "matrix1999",
+    "year": "1999",
+    "genre": "Science Fiction",
+    "title": "The Matrix",
+    "score": "99"
+  },
+  {
+    "id": "matrix2021",
+    "year": "2021",
+    "genre": "Science Fiction",
+    "title": "The Matrix Resurrections",
+    "score": "66"
+  },
+  {
+    "id": "northman2022",
+    "year": "2022",
+    "genre": "action",
+    "title": "The Northman",
+    "score": "80"
+  },
+  {
+    "id": "north2008",
+    "year": "2008",
+    "genre": "COMEDY",
+    "title": "Welcome to the North",
+    "score": "45"
+  },
+  {
+    "id": "south2012",
+    "year": "2012",
+    "genre": "comedy",
+    "title": "Welcome to the South",
+    "score": "50"
+  },
+  {
+    "id": "sw1977",
+    "year": "1977",
+    "genre": "sci-fi",
+    "title": "Star Wars: A New Hope",
+    "score": "85"
+  },
+  {
+    "id": "sw1999",
+    "year": "1999",
+    "genre": "Science Fiction",
+    "title": "Star Wars: Episode I – The Phantom Menace",
+    "score": "50"
+  },
+  {
+    "id": "sw2017",
+    "year": "2017",
+    "genre": "Science Fiction",
+    "title": "Star Wars: The Last Jedi",
+    "score": "40"
+  },
+  {
+    "id": "us2019",
+    "year": "2019",
+    "genre": "terror",
+    "title": "Us",
+    "score": "45"
+  },
+  {
+    "id": "scape2019",
+    "year": "2019",
+    "genre": "Terror",
+    "title": "Scape Room",
+    "score": "5"
+  },
+  {
+    "id": "adastra2019",
+    "year": "2019",
+    "genre": "science fiction",
+    "title": "Ad Astra",
+    "score": "66"
+  },
+  {
+    "id": "knivesout2019",
+    "year": "2019",
+    "genre": "Comedy",
+    "title": "Knives Out",
+    "score": "85"
+  },
+  {
+    "id": "xmas2019",
+    "year": "2019",
+    "genre": "xmas",
+    "title": "Last Christmas",
+    "score": "0"
+  },
+  {
+    "id": "diehard1988",
+    "year": "1988",
+    "genre": "XMAS",
+    "title": "Die Hard",
+    "score": "99"
+  },
+  {
+    "id": "holiday2006",
+    "year": "2006",
+    "genre": "xmas",
+    "title": "The Holiday",
+    "score": "50"
+  },
+  {
+    "id": "love2003",
+    "year": "2003",
+    "genre": "xmas",
+    "title": "Love Actually",
+    "score": "60"
+  },
+  {
+    "id": "home1990",
+    "year": "1990",
+    "genre": "XMAS",
+    "title": "Home Alone",
+    "score": "86"
+  },
+  {
+    "id": "diehard2007",
+    "year": "2007",
+    "genre": "action",
+    "title": "Live Free or Die Hard",
+    "score": "50"
+  },
+  {
+    "id": "wardogs2015",
+    "year": "2015",
+    "genre": "COMEDY",
+    "title": "War Dogs",
+    "score": "65"
+  }
+]
