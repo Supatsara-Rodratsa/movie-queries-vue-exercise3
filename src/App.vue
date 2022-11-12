@@ -22,13 +22,293 @@ level 5: I'd like to know at all times what is the average score of ALL the movi
 bonus level: Apply nice styling to this UI!
 */
 
-// TODO:
+import movies from './assets/movies.json';
+import { computed, ref, watch } from 'vue';
+import MovieCard from './components/MovieCard.vue';
+import Pagination from './components/Pagination.vue';
+import Search from './components/Search.vue';
+import BlankResult from './components/BlankResult.vue';
+import MultipleSelection from './components/MultipleSelection.vue';
+
+const genreMapping = {"Sci-fi":["sci-fi", "Science Fiction"], "Action":["action"], "Comedy": ["comedy"], "Xmas": ["xmas"], "Terror":["terror"], "Animation": ["animation"]};
+const currentPage = ref(1);
+const numberOfItemPerPage = ref(6);
+const allMovies = transformGenre();
+const currentMovies = ref(allMovies);
+const searchResult = ref('');
+const filteredMovies = ref([]);
+const selectedDates = ref([]);
+const selectedGenres = ref([]);
+
+// init Pagination
+paginate(currentMovies, currentPage.value)
+
+watch(currentPage, newPage => {
+  if (isFiltering()) {
+    paginate(filteredMovies, newPage);
+  } else {
+    paginate(ref(allMovies), newPage);
+  }
+});
+
+watch(filteredMovies, newMovies => {
+  paginate(isFiltering() ? ref(newMovies) : ref(allMovies), 1);
+});
+
+function transformGenre() {
+  let transformData = movies.map(movie => {
+    for (let [key, genreList] of Object.entries(genreMapping)) {
+      genreList = genreList.map(genre => genre.toLowerCase());
+      if (genreList.includes(movie.genre.toLowerCase())){
+        return {
+          ...movie,
+          genre: key
+        }
+      }
+    }
+  });
+  return transformData;
+}
+
+function paginate (movies, currentPage) {
+  const current = currentPage;
+  const itemPerPage = numberOfItemPerPage.value;
+  const from = (current * itemPerPage) - itemPerPage;
+  const to = (current * itemPerPage);
+  currentMovies.value = movies.value.slice(from, to);
+}
+
+function updatePagination(value) {
+  currentPage.value = value;
+}
+
+function searchMovie(value) {
+  searchResult.value = value;
+  filteringMovies();
+}
+
+function getSelectedDates(value) {
+  selectedDates.value = value;
+  filteringMovies();
+}
+
+function getSelectedGenres(value) {
+  selectedGenres.value = value;
+  filteringMovies();
+}
+
+function filteringMovies() {
+  let tempMovies = allMovies;
+  if (isFiltering()) {
+    const filter = tempMovies.filter(movie => {
+      if (searchResult.value != '') {
+        if (movie.title.toLowerCase().indexOf(searchResult.value.toLowerCase()) != -1) {
+          if (selectedDates.value.length > 0) {
+            if (selectedDates.value.includes(movie.year)) {
+              if (selectedGenres.value.length > 0) {
+                if (selectedGenres.value.includes(movie.genre)) {
+                  return movie; // name, genre and year are matching
+                } else {
+                  return null;
+                }
+              }
+              return movie; // only name and year are matching
+            }
+          } else if (selectedGenres.value.length > 0){
+            if (selectedGenres.value.includes(movie.genre)) {
+              return movie; // only name and genre are matching
+            } 
+          } else {
+            return movie; // only name
+          }
+        }
+      } else if (selectedGenres.value.includes(movie.genre) && selectedDates.value.includes(movie.year)) {
+          return movie; // genre and year are matching
+      } else if (selectedDates.value.length == 0 && selectedGenres.value.includes(movie.genre)) {
+        return movie; // only genre
+      } else if (selectedGenres.value.length == 0 && selectedDates.value.includes(movie.year)) {
+        return movie; // only year
+      }
+    });
+    filteredMovies.value = filter;
+  } else {
+    filteredMovies.value = [];
+  }
+  currentPage.value = 1;
+}
+
+function getAllYears() {
+  const years = allMovies.map((movie) => movie.year);
+  return [ ...new Set(years) ].sort().reverse();
+}
+
+function getAllGenres() {
+  const genres = allMovies.map((movie) => movie.genre);
+  return [ ...new Set(genres) ].sort();
+}
+
+function isFiltering() {
+  return searchResult.value != '' || selectedDates.value.length > 0 || selectedGenres.value.length > 0;
+}
+
+const totalPage = computed(() => {
+  if (filteredMovies.value.length > 0 || isFiltering()) {
+    return Math.ceil(filteredMovies.value.length / numberOfItemPerPage.value) || 1;
+  } else {
+    return Math.ceil(allMovies.length / numberOfItemPerPage.value);
+  }
+});
+
+const averageScore = computed(() => {
+  let tempArray = []
+  if (filteredMovies.value.length > 0) {
+    tempArray = filteredMovies.value;
+  } else {
+    tempArray = allMovies;
+  }
+  return (tempArray.reduce((sum, current) => sum + Number(current.score), 0) / tempArray.length).toFixed(2);
+});
+
 </script>
 
 <template>
-  <!-- TODO: -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <body>
+    <h3>Movies</h3>
+    <div class="flex center" v-show="currentMovies.length > 0">
+      <p class="average-score">Average Score: {{ averageScore }}</p>
+    </div>
+    <div class="flex center">
+      <Search @onSearchButtonClicked="searchMovie($event)"></Search>
+    </div>
+    <div class="flex-col center mrg-40">
+      <h4>Filtered By</h4>
+      <div class="flex-row gap center">
+        <div class="flex-col center">
+          <p class="header">Year</p>
+          <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates" @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
+        </div>
+        <div class="flex-col center">
+          <p class="header">Genre</p>
+          <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres" @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
+        </div>
+      </div>
+    </div>
+   
+    <div class="grid" v-if="currentMovies.length > 0">
+      <div v-for="item in currentMovies" v-bind:key="item.id">
+        <MovieCard :movie="item"></MovieCard>
+      </div>
+    </div>
+    <div v-else>
+      <BlankResult></BlankResult>
+    </div>
+    <Pagination 
+      :currentPage="currentPage"
+      :totalPage="totalPage"
+      @forwardToPrevPage="updatePagination($event)"
+      @forwardToNextPage="updatePagination($event)"
+      @forwardToFirstPage="updatePagination($event)"
+      @forwardToLastPage="updatePagination($event)"
+    >
+    </Pagination>
+  </body>
 </template>
 
-<style scoped>
-/* TODO: */
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+  body {
+    background: black;
+    color: white;
+    font-family: 'Lato', sans-serif;
+    margin: 30px;
+  }
+
+  .fa {
+    color: #ff2c1f;
+  }
+
+  .flex-end {
+    display: flex;
+    align-items: end;
+    justify-content: end;
+  }
+  
+
+  h3 {
+    font-size: 50px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+    text-transform: capitalize;
+    font-style: italic;
+  }
+
+  h4 {
+    font-size: 35px;
+    font-weight: 700;
+    font-style: italic;
+    margin-bottom: 15px;
+    margin-top: 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-gap: 40px;
+    margin: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    justify-content: center;
+    width: 70%;
+    margin: auto;
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .center {
+    align-items: center;
+    justify-content: center;
+  }
+
+  p {
+    font-size: 12px;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .space-between {
+    justify-content: space-between;
+    align-items: start;
+  }
+
+  .average-score {
+    font-size: 24px;
+  }
+
+  .gap {
+    gap: 30px;
+  }
+
+  .mrg-40 {
+    margin-bottom: 40px;
+  }
+
+  .header {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 10px;
+  }
+
 </style>
