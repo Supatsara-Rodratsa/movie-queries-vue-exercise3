@@ -2,33 +2,30 @@
 import { watch } from "@vue/runtime-core";
 import { ref } from 'vue';
 
-defineProps({ placeholder: String });
+defineProps({ placeholder: String, isNumberOnly: Boolean, hideButton: Boolean });
 const search = ref('');
-
 const emit = defineEmits(['onSearchButtonClicked']);
 
 function onSearchButtonClicked(value) {
     emit('onSearchButtonClicked', value);
-}
+} 
 
 watch(search, newSearch => {
-    if (newSearch == '' ) {
-        emit('onSearchButtonClicked', newSearch);
-    }
+    onSearchButtonClicked(newSearch)
 });
 
 </script>
 
 <template>
   <div class="search-container">
-    <input v-on:keyup.enter="onSearchButtonClicked(search)" type="text" :placeholder="placeholder || 'Search..'" v-model="search">
-    <button @click="onSearchButtonClicked(search)"><i class="fa fa-search"></i></button>
+    <input v-on:keyup.enter="onSearchButtonClicked(search)" :type="isNumberOnly ? 'number':'text'" :placeholder="placeholder || 'Search..'" v-model="search">
+    <button v-show="!hideButton" @click="onSearchButtonClicked(search)"><i class="fa fa-search"></i></button>
   </div>
 </template>
 
 <style scoped>
 .search-container {
-    margin: 50px auto;
+    margin: 20px auto 50px auto;
     position: relative;
     width: 350px;
 }

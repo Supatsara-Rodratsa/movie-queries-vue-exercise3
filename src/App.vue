@@ -33,7 +33,7 @@ import MultipleSelection from './components/MultipleSelection.vue';
 const genreMapping = {"Sci-fi":["sci-fi", "Science Fiction"], "Action":["action"], "Comedy": ["comedy"], "Xmas": ["xmas"], "Terror":["terror"], "Animation": ["animation"]};
 const currentPage = ref(1);
 const numberOfItemPerPage = ref(6);
-const allMovies = transformGenre();
+const allMovies = sortingMovieByScore(transformGenre());
 const currentMovies = ref(allMovies);
 const searchResult = ref('');
 const filteredMovies = ref([]);
@@ -62,7 +62,8 @@ function transformGenre() {
       if (genreList.includes(movie.genre.toLowerCase())){
         return {
           ...movie,
-          genre: key
+          genre: key,
+          score: Number(movie.score)
         }
       }
     }
@@ -78,12 +79,19 @@ function paginate (movies, currentPage) {
   currentMovies.value = movies.value.slice(from, to);
 }
 
+function sortingMovieByScore(movies) {
+   return movies.sort((movie1, movie2) => {
+      return movie2.score - movie1.score;
+   });
+}
+
 function updatePagination(value) {
   currentPage.value = value;
 }
 
 function searchMovie(value) {
   searchResult.value = value;
+  console.log(searchResult.value );
   filteringMovies();
 }
 
@@ -95,6 +103,13 @@ function getSelectedDates(value) {
 function getSelectedGenres(value) {
   selectedGenres.value = value;
   filteringMovies();
+}
+
+function setItemPerPage(value) {
+  if (value > 0) {
+    numberOfItemPerPage.value = value;
+    paginate(isFiltering() ? filteredMovies : ref(allMovies), currentPage.value)
+  }
 }
 
 function filteringMovies() {
@@ -130,7 +145,7 @@ function filteringMovies() {
         return movie; // only year
       }
     });
-    filteredMovies.value = filter;
+    filteredMovies.value = sortingMovieByScore(filter);
   } else {
     filteredMovies.value = [];
   }
@@ -159,15 +174,24 @@ const totalPage = computed(() => {
   }
 });
 
-const averageScore = computed(() => {
-  let tempArray = []
-  if (filteredMovies.value.length > 0) {
-    tempArray = filteredMovies.value;
-  } else {
-    tempArray = allMovies;
-  }
-  return (tempArray.reduce((sum, current) => sum + Number(current.score), 0) / tempArray.length).toFixed(2);
+const averageScoreForFilteredMovies = computed(() => {
+  return averageScore(filteredMovies.value.length > 0 ? filteredMovies.value : allMovies).toFixed(2);
 });
+
+const averageScoreForCurrentShowingMovies = computed(() => {
+  return averageScore(currentMovies.value).toFixed(2);
+});
+
+const averageScoreForAllMovies = computed(() => {
+  return averageScore(allMovies).toFixed(2);
+});
+
+function averageScore(list) {
+  const sum = list
+    .map(movie => movie.score)
+    .reduce((prev, current) => prev + current, 0);
+  return (sum / list.length) || 0;
+}
 
 </script>
 
@@ -175,25 +199,38 @@ const averageScore = computed(() => {
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <body>
     <h3>Movies</h3>
-    <div class="flex center" v-show="currentMovies.length > 0">
-      <p class="average-score">Average Score: {{ averageScore }}</p>
-    </div>
-    <div class="flex center">
+    <div class="flex-col center">
+      <h4 class="flex center">Search Movie</h4>
       <Search @onSearchButtonClicked="searchMovie($event)"></Search>
     </div>
-    <div class="flex-col center mrg-40">
-      <h4>Filtered By</h4>
-      <div class="flex-row gap center">
-        <div class="flex-col center">
-          <p class="header">Year</p>
-          <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates" @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
+    <div class="flex-col center">
+      <h4 class="flex center">Item per Page</h4>
+      <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'" @onSearchButtonClicked="setItemPerPage($event)"></Search>
+    </div>
+    <div class="flex-row content-center gap">
+      <div class="flex-col content-center">
+        <h4 class="flex center">Average Score</h4>
+        <div class="flex-col center average-container">
+          <p class="average-score mtb-5">All Movies: {{ averageScoreForAllMovies }}</p>
+          <p class="average-score mtb-5">Current Page: {{ averageScoreForCurrentShowingMovies }}</p>
+          <p class="average-score mtb-5">All Filtered Movies: {{ averageScoreForFilteredMovies }}</p>
         </div>
-        <div class="flex-col center">
-          <p class="header">Genre</p>
-          <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres" @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
+      </div>
+      <div class="flex-col center mrg-40">
+        <h4>Filtered By</h4>
+        <div class="flex-row gap center">
+          <div class="flex-col center">
+            <p class="header">Year</p>
+            <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates" @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
+          </div>
+          <div class="flex-col center">
+            <p class="header">Genre</p>
+            <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres" @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
+          </div>
         </div>
       </div>
     </div>
+    
    
     <div class="grid" v-if="currentMovies.length > 0">
       <div v-for="item in currentMovies" v-bind:key="item.id">
@@ -251,6 +288,8 @@ const averageScore = computed(() => {
     font-style: italic;
     margin-bottom: 15px;
     margin-top: 0;
+    width: 100%;
+    text-align: center;
   }
 
   .grid {
@@ -275,6 +314,7 @@ const averageScore = computed(() => {
   .flex-row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .center {
@@ -309,6 +349,19 @@ const averageScore = computed(() => {
     font-size: 20px;
     font-weight: 500;
     margin: 10px;
+  }
+
+  .mtb-5 {
+    margin: 5px 0;
+  }
+
+  .content-center {
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .average-container {
+    margin: 50px 0;
   }
 
 </style>
