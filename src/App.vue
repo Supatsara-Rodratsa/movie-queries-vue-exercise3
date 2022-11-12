@@ -32,11 +32,11 @@ import MultipleSelection from "./components/MultipleSelection.vue";
 
 const genreMapping = {
   "Sci-fi": ["sci-fi", "Science Fiction"],
-  Action: ["action"],
-  Comedy: ["comedy"],
-  Xmas: ["xmas"],
-  Terror: ["terror"],
-  Animation: ["animation"],
+  "Action": ["action"],
+  "Comedy": ["comedy"],
+  "Xmas": ["xmas"],
+  "Terror": ["terror"],
+  "Animation": ["animation"],
 };
 const currentPage = ref(1);
 const numberOfItemPerPage = ref(6);
