@@ -22,28 +22,35 @@ level 5: I'd like to know at all times what is the average score of ALL the movi
 bonus level: Apply nice styling to this UI!
 */
 
-import movies from './assets/movies.json';
-import { computed, ref, watch } from 'vue';
-import MovieCard from './components/MovieCard.vue';
-import Pagination from './components/Pagination.vue';
-import Search from './components/Search.vue';
-import BlankResult from './components/BlankResult.vue';
-import MultipleSelection from './components/MultipleSelection.vue';
+import movies from "./assets/movies.json";
+import { computed, ref, watch } from "vue";
+import MovieCard from "./components/MovieCard.vue";
+import Pagination from "./components/Pagination.vue";
+import Search from "./components/Search.vue";
+import BlankResult from "./components/BlankResult.vue";
+import MultipleSelection from "./components/MultipleSelection.vue";
 
-const genreMapping = {"Sci-fi":["sci-fi", "Science Fiction"], "Action":["action"], "Comedy": ["comedy"], "Xmas": ["xmas"], "Terror":["terror"], "Animation": ["animation"]};
+const genreMapping = {
+  "Sci-fi": ["sci-fi", "Science Fiction"],
+  Action: ["action"],
+  Comedy: ["comedy"],
+  Xmas: ["xmas"],
+  Terror: ["terror"],
+  Animation: ["animation"],
+};
 const currentPage = ref(1);
 const numberOfItemPerPage = ref(6);
 const allMovies = sortingMovieByScore(transformGenre());
 const currentMovies = ref(allMovies);
-const searchResult = ref('');
+const searchResult = ref("");
 const filteredMovies = ref([]);
 const selectedDates = ref([]);
 const selectedGenres = ref([]);
 
 // init Pagination
-paginate(currentMovies, currentPage.value)
+paginate(currentMovies, currentPage.value);
 
-watch(currentPage, newPage => {
+watch(currentPage, (newPage) => {
   if (isFiltering()) {
     paginate(filteredMovies, newPage);
   } else {
@@ -51,38 +58,38 @@ watch(currentPage, newPage => {
   }
 });
 
-watch(filteredMovies, newMovies => {
+watch(filteredMovies, (newMovies) => {
   paginate(isFiltering() ? ref(newMovies) : ref(allMovies), 1);
 });
 
 function transformGenre() {
-  let transformData = movies.map(movie => {
+  let transformData = movies.map((movie) => {
     for (let [key, genreList] of Object.entries(genreMapping)) {
-      genreList = genreList.map(genre => genre.toLowerCase());
-      if (genreList.includes(movie.genre.toLowerCase())){
+      genreList = genreList.map((genre) => genre.toLowerCase());
+      if (genreList.includes(movie.genre.toLowerCase())) {
         return {
           ...movie,
           genre: key,
-          score: Number(movie.score)
-        }
+          score: Number(movie.score),
+        };
       }
     }
   });
   return transformData;
 }
 
-function paginate (movies, currentPage) {
+function paginate(movies, currentPage) {
   const current = currentPage;
   const itemPerPage = numberOfItemPerPage.value;
-  const from = (current * itemPerPage) - itemPerPage;
-  const to = (current * itemPerPage);
+  const from = current * itemPerPage - itemPerPage;
+  const to = current * itemPerPage;
   currentMovies.value = movies.value.slice(from, to);
 }
 
 function sortingMovieByScore(movies) {
-   return movies.sort((movie1, movie2) => {
-      return movie2.score - movie1.score;
-   });
+  return movies.sort((movie1, movie2) => {
+    return movie2.score - movie1.score;
+  });
 }
 
 function updatePagination(value) {
@@ -91,7 +98,6 @@ function updatePagination(value) {
 
 function searchMovie(value) {
   searchResult.value = value;
-  console.log(searchResult.value );
   filteringMovies();
 }
 
@@ -108,16 +114,22 @@ function getSelectedGenres(value) {
 function setItemPerPage(value) {
   if (value > 0) {
     numberOfItemPerPage.value = value;
-    paginate(isFiltering() ? filteredMovies : ref(allMovies), currentPage.value)
+    paginate(
+      isFiltering() ? filteredMovies : ref(allMovies),
+      currentPage.value
+    );
   }
 }
 
 function filteringMovies() {
   let tempMovies = allMovies;
   if (isFiltering()) {
-    const filter = tempMovies.filter(movie => {
-      if (searchResult.value != '') {
-        if (movie.title.toLowerCase().indexOf(searchResult.value.toLowerCase()) != -1) {
+    const filter = tempMovies.filter((movie) => {
+      if (searchResult.value != "") {
+        if (
+          movie.title.toLowerCase().indexOf(searchResult.value.toLowerCase()) !=
+          -1
+        ) {
           if (selectedDates.value.length > 0) {
             if (selectedDates.value.includes(movie.year)) {
               if (selectedGenres.value.length > 0) {
@@ -129,19 +141,28 @@ function filteringMovies() {
               }
               return movie; // only name and year are matching
             }
-          } else if (selectedGenres.value.length > 0){
+          } else if (selectedGenres.value.length > 0) {
             if (selectedGenres.value.includes(movie.genre)) {
               return movie; // only name and genre are matching
-            } 
+            }
           } else {
             return movie; // only name
           }
         }
-      } else if (selectedGenres.value.includes(movie.genre) && selectedDates.value.includes(movie.year)) {
-          return movie; // genre and year are matching
-      } else if (selectedDates.value.length == 0 && selectedGenres.value.includes(movie.genre)) {
+      } else if (
+        selectedGenres.value.includes(movie.genre) &&
+        selectedDates.value.includes(movie.year)
+      ) {
+        return movie; // genre and year are matching
+      } else if (
+        selectedDates.value.length == 0 &&
+        selectedGenres.value.includes(movie.genre)
+      ) {
         return movie; // only genre
-      } else if (selectedGenres.value.length == 0 && selectedDates.value.includes(movie.year)) {
+      } else if (
+        selectedGenres.value.length == 0 &&
+        selectedDates.value.includes(movie.year)
+      ) {
         return movie; // only year
       }
     });
@@ -154,28 +175,36 @@ function filteringMovies() {
 
 function getAllYears() {
   const years = allMovies.map((movie) => movie.year);
-  return [ ...new Set(years) ].sort().reverse();
+  return [...new Set(years)].sort().reverse();
 }
 
 function getAllGenres() {
   const genres = allMovies.map((movie) => movie.genre);
-  return [ ...new Set(genres) ].sort();
+  return [...new Set(genres)].sort();
 }
 
 function isFiltering() {
-  return searchResult.value != '' || selectedDates.value.length > 0 || selectedGenres.value.length > 0;
+  return (
+    searchResult.value != "" ||
+    selectedDates.value.length > 0 ||
+    selectedGenres.value.length > 0
+  );
 }
 
 const totalPage = computed(() => {
   if (filteredMovies.value.length > 0 || isFiltering()) {
-    return Math.ceil(filteredMovies.value.length / numberOfItemPerPage.value) || 1;
+    return (
+      Math.ceil(filteredMovies.value.length / numberOfItemPerPage.value) || 1
+    );
   } else {
     return Math.ceil(allMovies.length / numberOfItemPerPage.value);
   }
 });
 
 const averageScoreForFilteredMovies = computed(() => {
-  return averageScore(filteredMovies.value.length > 0 ? filteredMovies.value : allMovies).toFixed(2);
+  return averageScore(
+    filteredMovies.value.length > 0 ? filteredMovies.value : allMovies
+  ).toFixed(2);
 });
 
 const averageScoreForCurrentShowingMovies = computed(() => {
@@ -188,15 +217,15 @@ const averageScoreForAllMovies = computed(() => {
 
 function averageScore(list) {
   const sum = list
-    .map(movie => movie.score)
+    .map((movie) => movie.score)
     .reduce((prev, current) => prev + current, 0);
-  return (sum / list.length) || 0;
+  return sum / list.length || 0;
 }
-
 </script>
 
 <template>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+
   <body>
     <h3>Movies</h3>
     <div class="flex-col center">
@@ -205,15 +234,22 @@ function averageScore(list) {
     </div>
     <div class="flex-col center">
       <h4 class="flex center">Item per Page</h4>
-      <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'" @onSearchButtonClicked="setItemPerPage($event)"></Search>
+      <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'"
+        @onSearchButtonClicked="setItemPerPage($event)"></Search>
     </div>
     <div class="flex-row content-center gap">
       <div class="flex-col content-center">
         <h4 class="flex center">Average Score</h4>
         <div class="flex-col center average-container">
-          <p class="average-score mtb-5">All Movies: {{ averageScoreForAllMovies }}</p>
-          <p class="average-score mtb-5">Current Page: {{ averageScoreForCurrentShowingMovies }}</p>
-          <p class="average-score mtb-5">All Filtered Movies: {{ averageScoreForFilteredMovies }}</p>
+          <p class="average-score mtb-5">
+            All Movies: {{ averageScoreForAllMovies }}
+          </p>
+          <p class="average-score mtb-5">
+            Current Page: {{ averageScoreForCurrentShowingMovies }}
+          </p>
+          <p class="average-score mtb-5">
+            All Filtered Movies: {{ averageScoreForFilteredMovies }}
+          </p>
         </div>
       </div>
       <div class="flex-col center mrg-40">
@@ -221,17 +257,18 @@ function averageScore(list) {
         <div class="flex-row gap center">
           <div class="flex-col center">
             <p class="header">Year</p>
-            <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates" @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
+            <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates"
+              @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
           </div>
           <div class="flex-col center">
             <p class="header">Genre</p>
-            <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres" @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
+            <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres"
+              @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
           </div>
         </div>
       </div>
     </div>
-    
-   
+
     <div class="grid" v-if="currentMovies.length > 0">
       <div v-for="item in currentMovies" v-bind:key="item.id">
         <MovieCard :movie="item"></MovieCard>
@@ -240,128 +277,122 @@ function averageScore(list) {
     <div v-else>
       <BlankResult></BlankResult>
     </div>
-    <Pagination 
-      :currentPage="currentPage"
-      :totalPage="totalPage"
-      @forwardToPrevPage="updatePagination($event)"
-      @forwardToNextPage="updatePagination($event)"
-      @forwardToFirstPage="updatePagination($event)"
-      @forwardToLastPage="updatePagination($event)"
-    >
+    <Pagination :currentPage="currentPage" :totalPage="totalPage" @forwardToPrevPage="updatePagination($event)"
+      @forwardToNextPage="updatePagination($event)" @forwardToFirstPage="updatePagination($event)"
+      @forwardToLastPage="updatePagination($event)">
     </Pagination>
   </body>
 </template>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-  body {
-    background: black;
-    color: white;
-    font-family: 'Lato', sans-serif;
-    margin: 30px;
-  }
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
-  .fa {
-    color: #ff2c1f;
-  }
+body {
+  background: black;
+  color: white;
+  font-family: "Lato", sans-serif;
+  margin: 30px;
+}
 
-  .flex-end {
-    display: flex;
-    align-items: end;
-    justify-content: end;
-  }
-  
+.fa {
+  color: #ff2c1f;
+}
 
-  h3 {
-    font-size: 50px;
-    font-weight: 700;
-    display: flex;
-    justify-content: center;
-    margin: 40px 0;
-    text-transform: capitalize;
-    font-style: italic;
-  }
+.flex-end {
+  display: flex;
+  align-items: end;
+  justify-content: end;
+}
 
-  h4 {
-    font-size: 35px;
-    font-weight: 700;
-    font-style: italic;
-    margin-bottom: 15px;
-    margin-top: 0;
-    width: 100%;
-    text-align: center;
-  }
+h3 {
+  font-size: 50px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+  text-transform: capitalize;
+  font-style: italic;
+}
 
-  .grid {
-    display: grid;
-    grid-gap: 40px;
-    margin: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    justify-content: center;
-    width: 70%;
-    margin: auto;
-  }
+h4 {
+  font-size: 35px;
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: 15px;
+  margin-top: 0;
+  width: 100%;
+  text-align: center;
+}
 
-  .flex {
-    display: flex;
-  }
+.grid {
+  display: grid;
+  grid-gap: 40px;
+  margin: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  justify-content: center;
+  width: 70%;
+  margin: auto;
+}
 
-  .flex-col {
-    display: flex;
-    flex-direction: column;
-  }
+.flex {
+  display: flex;
+}
 
-  .flex-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
 
-  .center {
-    align-items: center;
-    justify-content: center;
-  }
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 
-  p {
-    font-size: 12px;
-    font-weight: 300;
-    margin: 0;
-  }
+.center {
+  align-items: center;
+  justify-content: center;
+}
 
-  .space-between {
-    justify-content: space-between;
-    align-items: start;
-  }
+p {
+  font-size: 12px;
+  font-weight: 300;
+  margin: 0;
+}
 
-  .average-score {
-    font-size: 24px;
-  }
+.space-between {
+  justify-content: space-between;
+  align-items: start;
+}
 
-  .gap {
-    gap: 30px;
-  }
+.average-score {
+  font-size: 24px;
+}
 
-  .mrg-40 {
-    margin-bottom: 40px;
-  }
+.gap {
+  gap: 30px;
+}
 
-  .header {
-    font-size: 20px;
-    font-weight: 500;
-    margin: 10px;
-  }
+.mrg-40 {
+  margin-bottom: 40px;
+}
 
-  .mtb-5 {
-    margin: 5px 0;
-  }
+.header {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 10px;
+}
 
-  .content-center {
-    justify-content: center;
-    align-items: flex-start;
-  }
+.mtb-5 {
+  margin: 5px 0;
+}
 
-  .average-container {
-    margin: 50px 0;
-  }
+.content-center {
+  justify-content: center;
+  align-items: flex-start;
+}
 
+.average-container {
+  margin: 50px 0;
+}
 </style>

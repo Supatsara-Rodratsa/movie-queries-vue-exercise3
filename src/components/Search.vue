@@ -8,19 +8,18 @@ const emit = defineEmits(['onSearchButtonClicked']);
 
 function onSearchButtonClicked(value) {
     emit('onSearchButtonClicked', value);
-} 
+}
 
 watch(search, newSearch => {
     onSearchButtonClicked(newSearch)
 });
-
 </script>
 
 <template>
-  <div class="search-container">
-    <input v-on:keyup.enter="onSearchButtonClicked(search)" :type="isNumberOnly ? 'number':'text'" :placeholder="placeholder || 'Search..'" v-model="search">
-    <button v-show="!hideButton" @click="onSearchButtonClicked(search)"><i class="fa fa-search"></i></button>
-  </div>
+    <div class="search-container">
+        <input v-on:keyup.enter="onSearchButtonClicked(search)" :type="isNumberOnly ? 'number':'text'" :placeholder="placeholder || 'Search..'" v-model="search">
+        <button v-show="!hideButton" @click="onSearchButtonClicked(search)"><i class="fa fa-search"></i></button>
+    </div>
 </template>
 
 <style scoped>
@@ -37,9 +36,9 @@ input {
     width: 320px;
     font-size: 16px;
     font-family: 'Lato', sans-serif;
-  }
+}
 
-input:focus{
+input:focus {
     outline: none;
 }
 
@@ -59,5 +58,4 @@ button {
 button .fa {
     color: white;
 }
-
 </style>

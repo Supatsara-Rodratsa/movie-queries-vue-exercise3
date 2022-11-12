@@ -1,7 +1,5 @@
 <script setup>
-
 defineProps({ text: String, isDisabled: Boolean });
-
 </script>
 
 <template>
@@ -9,7 +7,6 @@ defineProps({ text: String, isDisabled: Boolean });
 </template>
 
 <style scoped>
-
 button {
     font-family: 'Lato', sans-serif;
     font-size: 16px;
@@ -28,5 +25,4 @@ button:disabled {
     cursor: not-allowed;
     color: gray;
 }
-
 </style>

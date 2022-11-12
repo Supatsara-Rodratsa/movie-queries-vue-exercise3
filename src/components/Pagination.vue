@@ -5,11 +5,11 @@ defineProps({ currentPage: Number, totalPage: Number });
 const emit = defineEmits(['forwardToPrevPage', 'forwardToNextPage', 'forwardToFirstPage', 'forwardToLastPage']);
 
 function onPrevButtonClicked(currentPage) {
-  const prevPage = currentPage - 1;
-  if (prevPage > 0) {
-    currentPage = prevPage;
-    emit('forwardToPrevPage', currentPage);
-  }
+    const prevPage = currentPage - 1;
+    if (prevPage > 0) {
+        currentPage = prevPage;
+        emit('forwardToPrevPage', currentPage);
+    }
 }
 
 function onNextButtonClicked(currentPage, totalPage) {
@@ -26,7 +26,6 @@ function updateToFirstPage() {
 function updateToLastPage(totalPage) {
     emit('forwardToLastPage', totalPage);
 }
-
 </script>
 
 <template>
@@ -40,7 +39,6 @@ function updateToLastPage(totalPage) {
 </template>
 
 <style scoped>
-
 .pagination {
     gap: 10px;
     margin: 40px 0;

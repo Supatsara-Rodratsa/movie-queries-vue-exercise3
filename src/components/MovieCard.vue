@@ -2,7 +2,6 @@
 import StarRating from "./StarRating.vue";
 
 defineProps({ movie: Object });
-
 </script>
 
 <template>
@@ -11,7 +10,7 @@ defineProps({ movie: Object });
             <img src="../assets/movie.png">
             <p>Image Not Found</p>
         </div>
-        <div class="content-bg flex-end" >
+        <div class="content-bg flex-end">
             <div class="content-details flex-col">
                 <div class="flex-col">
                     <p class="title">{{movie.title}}</p>
@@ -29,11 +28,10 @@ defineProps({ movie: Object });
 </template>
 
 <style scoped>
-
 .detail {
     text-transform: uppercase;
     margin-block: 5px;
-  }
+}
 
 .card {
     height: 100%;
@@ -47,13 +45,14 @@ defineProps({ movie: Object });
 .content-bg {
     height: 100%;
     width: 100%;
-    background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.1),  rgba(0,0,0,0.8), rgba(0,0,0,1));
+    background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 1));
 }
 
 .content-details {
     width: 100%;
     padding: 15px;
 }
+
 .flex-end img {
     width: 45%;
 }
@@ -69,6 +68,7 @@ defineProps({ movie: Object });
 img {
     width: 40%;
 }
+
 .not-found-img {
     height: 80%;
     width: 100%;

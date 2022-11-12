@@ -1,6 +1,5 @@
 <script setup>
 defineProps({ text: String });
-
 </script>
 
 <template>
@@ -11,11 +10,11 @@ defineProps({ text: String });
 </template>
 
 <style scoped>
-
 .blank-container {
     height: 200px;
     margin: 0 30px 30px 30px;
-    background-color: #1c1c1c;;
+    background-color: #1c1c1c;
+    ;
 }
 
 .fa {
