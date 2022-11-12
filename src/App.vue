@@ -248,7 +248,7 @@ function averageScore(list) {
         <Search @onSearchButtonClicked="searchMovie($event)"></Search>
       </div>
       <div class="flex-col center">
-        <h4 class="flex center">Item per Page</h4>
+        <h4 class="flex center">Items per Page</h4>
         <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'"
           @onSearchButtonClicked="setItemPerPage($event)"></Search>
       </div>
