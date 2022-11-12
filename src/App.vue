@@ -228,43 +228,44 @@ function averageScore(list) {
 
   <body>
     <h3>Movies</h3>
-    <div class="flex-col center">
-      <h4 class="flex center">Search Movie</h4>
-      <Search @onSearchButtonClicked="searchMovie($event)"></Search>
-    </div>
-    <div class="flex-col center">
-      <h4 class="flex center">Item per Page</h4>
-      <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'"
-        @onSearchButtonClicked="setItemPerPage($event)"></Search>
-    </div>
-    <div class="flex-row content-center gap">
-      <div class="flex-col content-center">
-        <h4 class="flex center">Average Score</h4>
-        <div class="flex-col center average-container">
-          <p class="average-score mtb-5">
-            All Movies: {{ averageScoreForAllMovies }}
-          </p>
-          <p class="average-score mtb-5">
-            Current Page: {{ averageScoreForCurrentShowingMovies }}
-          </p>
-          <p class="average-score mtb-5">
-            All Filtered Movies: {{ averageScoreForFilteredMovies }}
-          </p>
-        </div>
+    <div class="flex-col content-center">
+      <h4 class="flex center">Average Score</h4>
+      <div class="flex-col center average-container">
+        <p class="average-score mtb-5">
+          All Movies: {{ averageScoreForAllMovies }}
+        </p>
+        <p class="average-score mtb-5">
+          Current Page: {{ averageScoreForCurrentShowingMovies }}
+        </p>
+        <p class="average-score mtb-5">
+          All Filtered Movies: {{ averageScoreForFilteredMovies }}
+        </p>
       </div>
-      <div class="flex-col center mrg-40">
-        <h4>Filtered By</h4>
-        <div class="flex-row gap center">
-          <div class="flex-col center">
-            <p class="header">Year</p>
-            <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates"
-              @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
-          </div>
-          <div class="flex-col center">
-            <p class="header">Genre</p>
-            <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres"
-              @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
-          </div>
+    </div>
+    <div class="flex-row center gap">
+      <div class="flex-col center">
+        <h4 class="flex center">Search Movie</h4>
+        <Search @onSearchButtonClicked="searchMovie($event)"></Search>
+      </div>
+      <div class="flex-col center">
+        <h4 class="flex center">Item per Page</h4>
+        <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'"
+          @onSearchButtonClicked="setItemPerPage($event)"></Search>
+      </div>
+    </div>
+    
+    <div class="flex-col center mrg-40">
+      <h4>Filtered By</h4>
+      <div class="flex-row gap center">
+        <div class="flex-col center">
+          <p class="header">Year</p>
+          <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates"
+            @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
+        </div>
+        <div class="flex-col center">
+          <p class="header">Genre</p>
+          <MultipleSelection :lists="getAllGenres()" :currentSelectedItems="selectedGenres"
+            @updateSelectedItems="getSelectedGenres($event)"></MultipleSelection>
         </div>
       </div>
     </div>
@@ -366,7 +367,7 @@ p {
 }
 
 .average-score {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .gap {
@@ -393,6 +394,11 @@ p {
 }
 
 .average-container {
-  margin: 50px 0;
+  margin: 10px 0px 30px 0px;
+  width: 100%;
+}
+
+.gap-layout {
+  gap: 50px;
 }
 </style>
