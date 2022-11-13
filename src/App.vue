@@ -139,10 +139,10 @@ function filteringMovie() {
     filter = filteringMoviesBySearching(allMovies);
   }
   if (selectedYears.value.length > 0) {
-    filter = filterMovieByYear(filter.length > 0 ? filter : allMovies);
+    filter = filterMovieByYear(searchResult.value != '' ? filter : allMovies);
   }
   if (selectedGenres.value.length > 0) {
-    filter = filterMovieByGenre(filter.length > 0 ? filter : allMovies);
+    filter = filterMovieByGenre(searchResult.value != '' || selectedYears.value.length > 0 ? filter : allMovies);
   }
   filteredMovies.value = filter;
   currentPage.value = 1;
