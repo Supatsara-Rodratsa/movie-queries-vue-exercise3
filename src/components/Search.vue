@@ -2,8 +2,8 @@
 import { watch } from "@vue/runtime-core";
 import { ref } from 'vue';
 
-defineProps({ placeholder: String, isNumberOnly: Boolean, hideButton: Boolean });
-const search = ref('');
+const props = defineProps({ placeholder: String, isNumberOnly: Boolean, hideButton: Boolean, currentValue: String });
+const search = ref(props.currentValue || '');
 const emit = defineEmits(['onSearchButtonClicked']);
 
 function onSearchButtonClicked(value) {
@@ -11,6 +11,9 @@ function onSearchButtonClicked(value) {
 }
 
 watch(search, newSearch => {
+    if (newSearch == 0 && props.isNumberOnly) {
+        search.value = '';
+    }
     onSearchButtonClicked(newSearch)
 });
 </script>

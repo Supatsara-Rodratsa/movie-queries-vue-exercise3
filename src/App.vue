@@ -86,29 +86,23 @@ function paginate(movies, currentPage) {
   currentMovies.value = movies.value.slice(from, to);
 }
 
-function sortingMovieByScore(movies) {
-  return movies.sort((movie1, movie2) => {
-    return movie2.score - movie1.score;
-  });
-}
-
 function updatePagination(value) {
   currentPage.value = value;
 }
 
 function searchMovie(value) {
   searchResult.value = value;
-  filteringMovies();
+  filteringMovie();
 }
 
 function getSelectedDates(value) {
   selectedDates.value = value;
-  filteringMovies();
+  filteringMovie();
 }
 
 function getSelectedGenres(value) {
   selectedGenres.value = value;
-  filteringMovies();
+  filteringMovie();
 }
 
 function setItemPerPage(value) {
@@ -121,55 +115,43 @@ function setItemPerPage(value) {
   }
 }
 
-function filteringMovies() {
-  let tempMovies = allMovies;
-  if (isFiltering()) {
-    const filter = tempMovies.filter((movie) => {
-      if (searchResult.value != "") {
-        if (
-          movie.title.toLowerCase().indexOf(searchResult.value.toLowerCase()) !=
-          -1
-        ) {
-          if (selectedDates.value.length > 0) {
-            if (selectedDates.value.includes(movie.year)) {
-              if (selectedGenres.value.length > 0) {
-                if (selectedGenres.value.includes(movie.genre)) {
-                  return movie; // name, genre and year are matching
-                } else {
-                  return null;
-                }
-              }
-              return movie; // only name and year are matching
-            }
-          } else if (selectedGenres.value.length > 0) {
-            if (selectedGenres.value.includes(movie.genre)) {
-              return movie; // only name and genre are matching
-            }
-          } else {
-            return movie; // only name
-          }
-        }
-      } else if (
-        selectedGenres.value.includes(movie.genre) &&
-        selectedDates.value.includes(movie.year)
-      ) {
-        return movie; // genre and year are matching
-      } else if (
-        selectedDates.value.length == 0 &&
-        selectedGenres.value.includes(movie.genre)
-      ) {
-        return movie; // only genre
-      } else if (
-        selectedGenres.value.length == 0 &&
-        selectedDates.value.includes(movie.year)
-      ) {
-        return movie; // only year
-      }
-    });
-    filteredMovies.value = sortingMovieByScore(filter);
-  } else {
-    filteredMovies.value = [];
+function filterMovieByGenre(movies) {
+  const filter = movies
+    .filter((movie) => selectedGenres.value.includes(movie.genre));
+  return sortingMovieByScore(filter);
+}
+
+function filterMovieByYear(movies) {
+  const filter = movies
+    .filter((movie) => selectedDates.value.includes(movie.year));
+  return sortingMovieByScore(filter);
+}
+
+function filteringMoviesBySearching(movies) {
+  const filter = movies
+    .filter((movie) => movie.title.toLowerCase().includes(searchResult.value.toLowerCase()));
+  return sortingMovieByScore(filter);
+}
+
+function filteringMovie() {
+  let filter = [];
+  if (searchResult.value != '') {
+    filter = filteringMoviesBySearching(allMovies);
+    if (selectedDates.value.length > 0) {
+      filter = filterMovieByYear(filter);
+    }
+    if (selectedGenres.value.length > 0) {
+      filter = filterMovieByGenre(filter);
+    }
+  } else if (selectedDates.value.length > 0 && selectedGenres.value.length > 0) {
+    filter = filterMovieByYear(allMovies);
+    filter = filterMovieByGenre(filter);
+  } else if (selectedDates.value.length > 0) {
+    filter = filterMovieByYear(allMovies);
+  } else if (selectedGenres.value.length > 0) {
+    filter = filterMovieByGenre(allMovies);
   }
+  filteredMovies.value = filter;
   currentPage.value = 1;
 }
 
@@ -189,6 +171,19 @@ function isFiltering() {
     selectedDates.value.length > 0 ||
     selectedGenres.value.length > 0
   );
+}
+
+function sortingMovieByScore(movies) {
+  return movies.sort((movie1, movie2) => {
+    return movie2.score - movie1.score;
+  });
+}
+
+function averageScore(list) {
+  const sum = list
+    .map((movie) => movie.score)
+    .reduce((prev, current) => prev + current, 0);
+  return sum / list.length || 0;
 }
 
 const totalPage = computed(() => {
@@ -215,12 +210,6 @@ const averageScoreForAllMovies = computed(() => {
   return averageScore(allMovies).toFixed(2);
 });
 
-function averageScore(list) {
-  const sum = list
-    .map((movie) => movie.score)
-    .reduce((prev, current) => prev + current, 0);
-  return sum / list.length || 0;
-}
 </script>
 
 <template>
@@ -249,7 +238,7 @@ function averageScore(list) {
       </div>
       <div class="flex-col center">
         <h4 class="flex center">Items per Page</h4>
-        <Search :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'"
+        <Search :currentValue="numberOfItemPerPage" :isNumberOnly="true" :hideButton="true" :placeholder="'Item per page..'"
           @onSearchButtonClicked="setItemPerPage($event)"></Search>
       </div>
     </div>
