@@ -137,19 +137,12 @@ function filteringMovie() {
   let filter = [];
   if (searchResult.value != '') {
     filter = filteringMoviesBySearching(allMovies);
-    if (selectedYears.value.length > 0) {
-      filter = filterMovieByYear(filter);
-    }
-    if (selectedGenres.value.length > 0) {
-      filter = filterMovieByGenre(filter);
-    }
-  } else if (selectedYears.value.length > 0 && selectedGenres.value.length > 0) {
-    filter = filterMovieByYear(allMovies);
-    filter = filterMovieByGenre(filter);
-  } else if (selectedYears.value.length > 0) {
-    filter = filterMovieByYear(allMovies);
-  } else if (selectedGenres.value.length > 0) {
-    filter = filterMovieByGenre(allMovies);
+  }
+  if (selectedYears.value.length > 0) {
+    filter = filterMovieByYear(filter.length > 0 ? filter : allMovies);
+  }
+  if (selectedGenres.value.length > 0) {
+    filter = filterMovieByGenre(filter.length > 0 ? filter : allMovies);
   }
   filteredMovies.value = filter;
   currentPage.value = 1;
