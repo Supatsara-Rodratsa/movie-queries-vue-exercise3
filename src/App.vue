@@ -40,7 +40,7 @@ const genreMapping = {
 };
 const currentPage = ref(1);
 const numberOfItemPerPage = ref(6);
-const allMovies = sortingMovieByScore(transformGenre());
+const allMovies = sortingMovieByScore(transformData());
 const currentMovies = ref(allMovies);
 const searchResult = ref("");
 const filteredMovies = ref([]);
@@ -62,14 +62,14 @@ watch(filteredMovies, (newMovies) => {
   paginate(isFiltering() ? ref(newMovies) : ref(allMovies), 1);
 });
 
-function transformGenre() {
+function transformData() {
   let transformData = movies.map((movie) => {
-    for (let [key, genreList] of Object.entries(genreMapping)) {
+    for (let [genre, genreList] of Object.entries(genreMapping)) {
       genreList = genreList.map((genre) => genre.toLowerCase());
       if (genreList.includes(movie.genre.toLowerCase())) {
         return {
           ...movie,
-          genre: key,
+          genre: genre,
           score: Number(movie.score),
         };
       }
