@@ -44,7 +44,7 @@ const allMovies = sortingMovieByScore(transformGenre());
 const currentMovies = ref(allMovies);
 const searchResult = ref("");
 const filteredMovies = ref([]);
-const selectedDates = ref([]);
+const selectedYears = ref([]);
 const selectedGenres = ref([]);
 
 // init Pagination
@@ -95,8 +95,8 @@ function searchMovie(value) {
   filteringMovie();
 }
 
-function getSelectedDates(value) {
-  selectedDates.value = value;
+function getSelectedYears(value) {
+  selectedYears.value = value;
   filteringMovie();
 }
 
@@ -123,7 +123,7 @@ function filterMovieByGenre(movies) {
 
 function filterMovieByYear(movies) {
   const filter = movies
-    .filter((movie) => selectedDates.value.includes(movie.year));
+    .filter((movie) => selectedYears.value.includes(movie.year));
   return sortingMovieByScore(filter);
 }
 
@@ -137,16 +137,16 @@ function filteringMovie() {
   let filter = [];
   if (searchResult.value != '') {
     filter = filteringMoviesBySearching(allMovies);
-    if (selectedDates.value.length > 0) {
+    if (selectedYears.value.length > 0) {
       filter = filterMovieByYear(filter);
     }
     if (selectedGenres.value.length > 0) {
       filter = filterMovieByGenre(filter);
     }
-  } else if (selectedDates.value.length > 0 && selectedGenres.value.length > 0) {
+  } else if (selectedYears.value.length > 0 && selectedGenres.value.length > 0) {
     filter = filterMovieByYear(allMovies);
     filter = filterMovieByGenre(filter);
-  } else if (selectedDates.value.length > 0) {
+  } else if (selectedYears.value.length > 0) {
     filter = filterMovieByYear(allMovies);
   } else if (selectedGenres.value.length > 0) {
     filter = filterMovieByGenre(allMovies);
@@ -168,7 +168,7 @@ function getAllGenres() {
 function isFiltering() {
   return (
     searchResult.value != "" ||
-    selectedDates.value.length > 0 ||
+    selectedYears.value.length > 0 ||
     selectedGenres.value.length > 0
   );
 }
@@ -248,8 +248,8 @@ const averageScoreForAllMovies = computed(() => {
       <div class="flex-row gap center">
         <div class="flex-col center">
           <p class="header">Year</p>
-          <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedDates"
-            @updateSelectedItems="getSelectedDates($event)"></MultipleSelection>
+          <MultipleSelection :lists="getAllYears()" :currentSelectedItems="selectedYears"
+            @updateSelectedItems="getSelectedYears($event)"></MultipleSelection>
         </div>
         <div class="flex-col center">
           <p class="header">Genre</p>

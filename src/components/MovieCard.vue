@@ -7,7 +7,7 @@ defineProps({ movie: Object });
 <template>
     <div class="card" :style="`background-image: url(${movie.picture})`">
         <div class="not-found-img" v-show="!movie.picture">
-            <img src="../assets/movie.png">
+            <img src="../assets/movie.png" alt="Image Not Found">
             <p>Image Not Found</p>
         </div>
         <div class="content-bg flex-end">
